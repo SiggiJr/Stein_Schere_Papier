@@ -1,0 +1,10 @@
+@mixin auto-grid($width) {
+  display: grid;
+  grid-template-columns: repeat(autofill, minmax($width, 1fr));
+}
+
+@mixin mediaquery($width) {
+  @media screen and (max-width: $width) {
+    @content;
+  }
+}

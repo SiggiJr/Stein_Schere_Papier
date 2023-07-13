@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <script defer src="./assets/js/main.js"></script>
+    <title>Schere, Stein, paar Bier</title>
+  </head>
+  <body>
+    <header>
+      <h1>Rock Paper Scissors</h1>
+    </header>
+    <main>
+      <section class="rock_paper_scissors_container">
+        <div class="rounds_container">
+          <h3>how many rounds?</h3>
+          <div class="rounds_counter_conatiner">
+            <div>
+              <input type="radio" name="rounds" id="rounds_5" value="5" checked />
+              <label for="rounds_5">5</label>
+              <input type="radio" name="rounds" id="rounds_10" value="10" />
+              <label for="rounds_10">10</label>
+            </div>
+            <div>
+              <input type="radio" name="rounds" id="rounds_15" value="15" />
+              <label for="rounds_15">15</label>
+              <input type="radio" name="rounds" id="rounds_20" value="20" />
+              <label for="rounds_20">20</label>
+            </div>
+          </div>
+        </div>
+        <article class="score">User 0 : 0 Computer</article>
+        <div>
+          <div class="text_output_container">
+            <h2>Let's play</h2>
+          </div>
+          <div class="selection_container">
+            <p class="stone selection_option" data-value="0">Stein</p>
+            <p class="paper selection_option" data-value="1">Papier</p>
+            <p class="scissors selection_option" data-value="2">Schere</p>
+          </div>
+          <p>MAKE YOUR MOVE</p>
+        </div>
+        <footer>
+          <button class="restart">restart</button>
+        </footer>
+      </section>
+    </main>
+  </body>
+</html>
