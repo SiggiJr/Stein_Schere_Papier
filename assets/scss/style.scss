@@ -26,6 +26,14 @@ align-items: center;
   margin-top: 20px;
 }
 
+.rounds_counter_container{
+  display: grid;
+grid-template-columns: 1fr 1fr;
+  div{
+padding: 20px;
+  }
+}
+
 .selection_container{
   display: flex;
   width: 30%;

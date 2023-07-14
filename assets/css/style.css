@@ -99,6 +99,14 @@ header {
   margin-top: 20px;
 }
 
+.rounds_counter_container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.rounds_counter_container div {
+  padding: 20px;
+}
+
 .selection_container {
   display: flex;
   width: 30%;

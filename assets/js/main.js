@@ -1,11 +1,13 @@
 "use strict";
 
 const selectionOptions = document.querySelectorAll(".selection_option");
-const RoundsOptions = document.querySelectorAll("input[name='rounds']");
+let roundsOptions = document.querySelectorAll("input[name='rounds']");
 const scoreOutput = document.querySelector(".score");
-const roundsCounterContainer = document.querySelector(".rounds_counter_conatiner");
+let roundsCounterContainer = document.querySelector(".rounds_counter_container");
 const textOutputContainer = document.querySelector(".text_output_container");
 const restartBtn = document.querySelector(".restart");
+
+const roundsCounterContainerDefault = roundsCounterContainer.innerHTML;
 
 let maxRounds = 5;
 let roundsCounter = 0;
@@ -29,7 +31,7 @@ const playRound = (event) => {
 
   scoreOutput.textContent = `User ${playerScore} : ${computerScore} Computer`;
 
-  const gameOver = checkGameOver(playerScore, computerScore, maxRounds, roundsCounter);
+  const gameOver = checkGameOver();
 
   textOutputContainer.innerHTML = textOutput(userChoice, computerChoice, result, playerScore, computerScore, gameOver);
 
@@ -42,7 +44,7 @@ const playRound = (event) => {
 
 //# ===== Überprüft ob das Spiel beendet ist =====
 
-const checkGameOver = (playerScore, computerScore, maxRounds, roundsCounter) => {
+const checkGameOver = () => {
   let gameOver = false;
   if (playerScore > maxRounds / 2 || computerScore > maxRounds / 2 || roundsCounter === maxRounds) {
     gameOver = true;
@@ -103,7 +105,31 @@ const textOutput = (userChoice, computerChoice, result, playerScore, computerSco
   return outputHTML;
 };
 
-RoundsOptions.forEach((option) => {
+//# ===== Reset-Btn =====
+
+const resetBtn = () => {
+  roundsCounterContainer.innerHTML = roundsCounterContainerDefault;
+  scoreOutput.textContent = "User 0 : 0 Computer";
+  roundsCounter = 0;
+  playerScore = 0;
+  computerScore = 0;
+
+  textOutputContainer.innerHTML = "<h2>Let's play</h2>";
+
+  let roundsOptions = document.querySelectorAll("input[name='rounds']");
+
+  roundsOptions.forEach((option) => {
+    option.addEventListener("change", (event) => {
+      maxRounds = Number(event.target.value);
+    });
+  });
+
+  selectionOptions.forEach((option) => {
+    option.addEventListener("click", playRound);
+  });
+};
+
+roundsOptions.forEach((option) => {
   option.addEventListener("change", (event) => {
     maxRounds = Number(event.target.value);
   });
@@ -113,6 +139,4 @@ selectionOptions.forEach((option) => {
   option.addEventListener("click", playRound);
 });
 
-restartBtn.addEventListener("click", () => {
-  location.reload();
-});
+restartBtn.addEventListener("click", resetBtn);
