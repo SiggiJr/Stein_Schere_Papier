@@ -16,7 +16,7 @@
       <section class="rock_paper_scissors_container">
         <div class="rounds_container">
           <h3>how many rounds?</h3>
-          <div class="rounds_counter_container">
+          <div class="rounds_counter_container rounds_counter_grid">
             <div>
               <input type="radio" name="rounds" id="rounds_5" value="5" checked />
               <label for="rounds_5">5</label>
@@ -35,17 +35,21 @@
             </div>
           </div>
         </div>
-        <article class="score">User 0 : 0 Computer</article>
+        <article class="score_container">
+          <h2 class="user player">Player</h2>
+          <p class="score">0 : 0</p>
+          <h2 class="comp player">Comp</h2>
+        </article>
         <div>
           <div class="text_output_container">
             <h2>Let's play</h2>
           </div>
           <div class="selection_container">
-            <p class="stone selection_option" data-value="0">Stein</p>
-            <p class="paper selection_option" data-value="1">Papier</p>
-            <p class="scissors selection_option" data-value="2">Schere</p>
+            <div class="stone selection_option" data-value="0"></div>
+            <div class="paper selection_option" data-value="1"></div>
+            <div class="scissors selection_option" data-value="2"></div>
           </div>
-          <p>MAKE YOUR MOVE</p>
+          <p class="make_move_text">MAKE YOUR MOVE</p>
         </div>
         <footer>
           <button class="restart">restart</button>

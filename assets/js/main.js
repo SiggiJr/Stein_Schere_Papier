@@ -7,8 +7,7 @@ let roundsCounterContainer = document.querySelector(".rounds_counter_container")
 const textOutputContainer = document.querySelector(".text_output_container");
 const restartBtn = document.querySelector(".restart");
 
-const roundsCounterContainerDefault = roundsCounterContainer.innerHTML;
-
+let roundsCounterContainerDefault;
 let maxRounds = 5;
 let roundsCounter = 0;
 let playerScore = 0;
@@ -25,11 +24,14 @@ const playRound = (event) => {
   } else if (result === 2 || result === -1) {
     computerScore++;
   }
+
   roundsCounter++;
 
-  roundsCounterContainer.textContent = `${roundsCounter} / ${maxRounds}`;
+  circleColor(event, result, roundsCounter);
 
-  scoreOutput.textContent = `User ${playerScore} : ${computerScore} Computer`;
+  changeRoundsOutput();
+
+  updateScoreRounds();
 
   const gameOver = checkGameOver();
 
@@ -40,6 +42,46 @@ const playRound = (event) => {
       option.removeEventListener("click", playRound);
     });
   }
+};
+
+const updateScoreRounds = () => {
+  roundsCounterContainer.textContent = `${roundsCounter} / ${maxRounds}`;
+
+  scoreOutput.textContent = `User ${playerScore} : ${computerScore} Computer`;
+};
+
+const changeRoundsOutput = () => {
+  if (roundsCounter === 1) {
+    roundsCounterContainer = document.querySelector(".rounds_counter_container");
+    roundsCounterContainerDefault = roundsCounterContainer.outerHTML;
+    roundsCounterContainer.classList.remove("rounds_counter_grid");
+  }
+};
+
+//# ===== Färbt den Kreis des ausgewählten Elements =====
+
+const circleColor = (event, result, roundsCounter) => {
+  if (result === 1 || result === -2) {
+    event.target.classList.add("win");
+  } else if (result === 2 || result === -1) {
+    event.target.classList.add("lose");
+  } else if (result === 0 && roundsCounter > 1) {
+    event.target.classList.add("draw");
+  }
+
+  const eventClasslist = Array.from(event.target.classList);
+  let colorClass = "";
+  if (eventClasslist.includes("win")) {
+    colorClass = "win";
+  } else if (eventClasslist.includes("lose")) {
+    colorClass = "lose";
+  } else if (eventClasslist.includes("draw")) {
+    colorClass = "draw";
+  }
+
+  setTimeout(() => {
+    event.target.classList.remove(colorClass);
+  }, 800);
 };
 
 //# ===== Überprüft ob das Spiel beendet ist =====
@@ -108,7 +150,7 @@ const textOutput = (userChoice, computerChoice, result, playerScore, computerSco
 //# ===== Reset-Btn =====
 
 const resetBtn = () => {
-  roundsCounterContainer.innerHTML = roundsCounterContainerDefault;
+  roundsCounterContainer.outerHTML = roundsCounterContainerDefault;
   scoreOutput.textContent = "User 0 : 0 Computer";
   roundsCounter = 0;
   playerScore = 0;
