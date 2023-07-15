@@ -81,39 +81,51 @@ body {
 }
 
 header {
-  height: 10vh;
+  height: 20vh;
+  padding-top: 5vh;
+}
+header h1 {
+  text-align: center;
+  font-size: 3rem;
 }
 
 .rock_paper_scissors_container {
   background-color: #000;
   color: #fff;
-  height: 90vh;
+  height: 80vh;
   display: flex;
   align-items: center;
   flex-direction: column;
+  padding-top: 70px;
 }
 
 .rounds_container {
-  width: 30%;
   border: 1px solid #fff;
   padding: 10px;
-  margin-top: 20px;
   text-align: center;
+  width: 280px;
+  font-size: 1.5rem;
 }
-.rounds_container .rounds_counter_grid {
+.rounds_container h3 {
+  font-size: initial;
+}
+
+.rounds_counter_container {
+  text-align: left;
+  padding-left: 50px;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
-.rounds_container .rounds_counter_container {
-  text-align: center;
-  font-size: 1.5rem;
+
+.hidden {
+  display: none;
 }
 
 .selection_container {
   display: flex;
   margin-top: 30px;
   justify-content: space-between;
-  width: 275px;
+  width: 280px;
   margin-inline: auto;
 }
 .selection_container .selection_option {
@@ -154,7 +166,7 @@ header {
 }
 
 .score_container {
-  width: 30%;
+  width: 280px;
   border: 1px solid #fff;
   text-align: center;
   margin-top: 20px;
@@ -178,6 +190,21 @@ header {
   top: 50%;
   right: -15%;
   transform: translate(0%, -50%);
+}
+.score_container.win {
+  border: 2px solid #00ff51;
+  box-shadow: 0px 0px 5px 2px #00ff51;
+  background-color: #00ff51;
+}
+.score_container.lose {
+  border: 2px solid #f00;
+  box-shadow: 0px 0px 5px 2px #f00;
+  background-color: #f00;
+}
+.score_container.draw {
+  border: 2px solid gray;
+  box-shadow: 0px 0px 5px 2px gray;
+  background-color: gray;
 }
 
 .text_output_container {

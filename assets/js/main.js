@@ -1,41 +1,47 @@
 "use strict";
 
 const selectionOptions = document.querySelectorAll(".selection_option");
-let roundsOptions = document.querySelectorAll("input[name='rounds']");
+const roundsCounterContainer = document.querySelector(".rounds_counter_container");
+const roundsOptions = document.querySelectorAll("input[name='rounds']");
+const roundsOutput = document.querySelector(".rounds_output");
+const scoreContainer = document.querySelector(".score_container");
 const scoreOutput = document.querySelector(".score");
-let roundsCounterContainer = document.querySelector(".rounds_counter_container");
 const textOutputContainer = document.querySelector(".text_output_container");
 const restartBtn = document.querySelector(".restart");
 
-let roundsCounterContainerDefault;
-let maxRounds = 5;
+let maxRounds = 0;
 let roundsCounter = 0;
 let playerScore = 0;
 let computerScore = 0;
+let gameRunning = false;
 
 const playRound = (event) => {
-  const userChoice = Number(event.target.dataset.value);
-  const computerChoice = Math.floor(Math.random() * 3);
-
-  const result = userChoice - computerChoice;
-
-  if (result === 1 || result === -2) {
-    playerScore++;
-  } else if (result === 2 || result === -1) {
-    computerScore++;
+  if (!gameRunning) {
+    startGame();
   }
 
   roundsCounter++;
 
-  circleColor(event, result, roundsCounter);
+  const resultMatrix = preparationPhase(event);
 
-  changeRoundsOutput();
+  resultMatrix[2] = resultMatrix[0] - resultMatrix[1];
+
+  circleColor(event, resultMatrix[2], roundsCounter);
+
+  resolutionPhase(resultMatrix);
 
   updateScoreRounds();
 
   const gameOver = checkGameOver();
 
-  textOutputContainer.innerHTML = textOutput(userChoice, computerChoice, result, playerScore, computerScore, gameOver);
+  textOutputContainer.innerHTML = textOutput(
+    resultMatrix[0],
+    resultMatrix[1],
+    resultMatrix[2],
+    playerScore,
+    computerScore,
+    gameOver
+  );
 
   if (gameOver) {
     selectionOptions.forEach((option) => {
@@ -44,44 +50,65 @@ const playRound = (event) => {
   }
 };
 
-const updateScoreRounds = () => {
-  roundsCounterContainer.textContent = `${roundsCounter} / ${maxRounds}`;
+//# ===== Startet das Spiel =====
 
-  scoreOutput.textContent = `User ${playerScore} : ${computerScore} Computer`;
+const startGame = () => {
+  selectMaxRounds();
+  roundsCounterContainer.classList.add("hidden");
+  roundsOutput.classList.remove("hidden");
+  gameRunning = true;
 };
 
-const changeRoundsOutput = () => {
-  if (roundsCounter === 1) {
-    roundsCounterContainer = document.querySelector(".rounds_counter_container");
-    roundsCounterContainerDefault = roundsCounterContainer.outerHTML;
-    roundsCounterContainer.classList.remove("rounds_counter_grid");
-  }
+const selectMaxRounds = () => {
+  roundsOptions.forEach((option) => {
+    if (option.checked) {
+      maxRounds = Number(option.value);
+    }
+  });
 };
 
-//# ===== Färbt den Kreis des ausgewählten Elements =====
+//# ===== gibt User und Comp Auswahl zurück =====
+
+const preparationPhase = (event) => {
+  const userChoice = Number(event.target.dataset.value);
+  const computerChoice = Math.floor(Math.random() * 3);
+  return [userChoice, computerChoice];
+};
+
+//# ===== Färbt User Auswahl je nach Rundenausgang =====
 
 const circleColor = (event, result, roundsCounter) => {
+  let colorClass = "";
   if (result === 1 || result === -2) {
     event.target.classList.add("win");
+    colorClass = "win";
   } else if (result === 2 || result === -1) {
     event.target.classList.add("lose");
-  } else if (result === 0 && roundsCounter > 1) {
-    event.target.classList.add("draw");
-  }
-
-  const eventClasslist = Array.from(event.target.classList);
-  let colorClass = "";
-  if (eventClasslist.includes("win")) {
-    colorClass = "win";
-  } else if (eventClasslist.includes("lose")) {
     colorClass = "lose";
-  } else if (eventClasslist.includes("draw")) {
+  } else if (result === 0 && roundsCounter >= 1) {
+    event.target.classList.add("draw");
     colorClass = "draw";
   }
 
   setTimeout(() => {
     event.target.classList.remove(colorClass);
   }, 800);
+};
+
+//# ==== Fügt Punkte hinzu =====
+
+const resolutionPhase = (resultMatrix) => {
+  if (resultMatrix[2] === 1 || resultMatrix[2] === -2) {
+    playerScore++;
+  } else if (resultMatrix[2] === 2 || resultMatrix[2] === -1) {
+    computerScore++;
+  }
+};
+
+const updateScoreRounds = () => {
+  roundsOutput.textContent = `${roundsCounter} / ${maxRounds}`;
+
+  scoreOutput.textContent = `${playerScore} : ${computerScore}`;
 };
 
 //# ===== Überprüft ob das Spiel beendet ist =====
@@ -94,88 +121,78 @@ const checkGameOver = () => {
   return gameOver;
 };
 
-//# ===== Funktion bestimmt den Text Output =====
+//# ===== bestimmt den Text Output =====
 
 const textOutput = (userChoice, computerChoice, result, playerScore, computerScore, gameOver) => {
-  let userOutput;
-  let computerOutput;
   let winner;
   let loser;
   let outputHTML;
-  switch (userChoice) {
-    case 0:
-      userOutput = "Stein";
-      break;
+  let choices = [userChoice, computerChoice];
+  let i = 0;
+  choices.forEach((choice) => {
+    switch (choices[i]) {
+      case 0:
+        choices[i] = "Stein";
+        break;
 
-    case 1:
-      userOutput = "Papier";
-      break;
-    case 2:
-      userOutput = "Schere";
-      break;
-  }
-
-  switch (computerChoice) {
-    case 0:
-      computerOutput = "Stein";
-      break;
-
-    case 1:
-      computerOutput = "Papier";
-      break;
-    case 2:
-      computerOutput = "Schere";
-      break;
-  }
+      case 1:
+        choices[i] = "Papier";
+        break;
+      case 2:
+        choices[i] = "Schere";
+        break;
+    }
+    i++;
+  });
 
   if (gameOver && playerScore > computerScore) {
     outputHTML = `<h2>User gewinnt</h2>`;
+    scoreContainer.classList.add("win");
   } else if (gameOver && playerScore < computerScore) {
     outputHTML = `<h2>Computer gewinnt</h2>`;
-  } else if ((gameOver && playerScore === computerScore) || result === 0) {
+    scoreContainer.classList.add("lose");
+  } else if (gameOver && playerScore === computerScore) {
     outputHTML = `<h2>Unentschieden</h2>`;
+    scoreContainer.classList.add("draw");
   } else if (result === -2 || result === 1) {
     winner = "User";
     loser = "Comp";
-    outputHTML = `<h2>${userOutput}<sup>${winner}</sup> schlägt ${computerOutput}<sup>${loser}</sup></h2>`;
+    outputHTML = `<h2>${choices[0]}<sup>${winner}</sup> schlägt ${choices[1]}<sup>${loser}</sup></h2>`;
   } else if (result === 2 || result === -1) {
     winner = "Comp";
     loser = "User";
-    outputHTML = `<h2>${computerOutput}<sup>${winner}</sup> schlägt ${userOutput}<sup>${loser}</sup></h2>`;
+    outputHTML = `<h2>${choices[1]}<sup>${winner}</sup> schlägt ${choices[0]}<sup>${loser}</sup></h2>`;
+  } else if (result === 0) {
+    outputHTML = `<h2>Unentschieden</h2>`;
   }
-
   return outputHTML;
 };
 
 //# ===== Reset-Btn =====
 
 const resetBtn = () => {
-  roundsCounterContainer.outerHTML = roundsCounterContainerDefault;
-  scoreOutput.textContent = "User 0 : 0 Computer";
   roundsCounter = 0;
   playerScore = 0;
   computerScore = 0;
+  scoreOutput.textContent = `${playerScore} : ${computerScore}`;
+  scoreContainer.classList = "score_container";
 
-  textOutputContainer.innerHTML = "<h2>Let's play</h2>";
-
-  let roundsOptions = document.querySelectorAll("input[name='rounds']");
+  roundsCounterContainer.classList.remove("hidden");
+  roundsOutput.classList.add("hidden");
+  gameRunning = false;
 
   roundsOptions.forEach((option) => {
-    option.addEventListener("change", (event) => {
-      maxRounds = Number(event.target.value);
-    });
+    if (option.value === "5") {
+      option.checked = true;
+    }
   });
+
+  textOutputContainer.innerHTML = "<h2>Let's play</h2>";
 
   selectionOptions.forEach((option) => {
     option.addEventListener("click", playRound);
   });
 };
-
-roundsOptions.forEach((option) => {
-  option.addEventListener("change", (event) => {
-    maxRounds = Number(event.target.value);
-  });
-});
 
 selectionOptions.forEach((option) => {
   option.addEventListener("click", playRound);
