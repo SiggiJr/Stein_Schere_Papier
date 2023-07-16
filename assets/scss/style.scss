@@ -45,6 +45,9 @@ align-items: center;
   padding-left: 50px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  input[type="radio"], label{
+    cursor: pointer;
+  }
 }
 
 
@@ -56,14 +59,17 @@ align-items: center;
   display: flex;
   margin-top: 30px;
   justify-content: space-between;
-  width: 280px;
+  // width: 360px;
+  gap: 20px;
   margin-inline: auto;
   .selection_option{
     width: 80px;
     height: 80px;
+    // margin-right: 20px;
     border-radius: 40px;
     border: 1px solid #fff;
     transition: border 500ms ease, box-shadow 500ms ease;
+    cursor: pointer;
   }
   .stone{
     background-image: url("../img/stone.png");
@@ -82,6 +88,19 @@ align-items: center;
     background-position: center;
     background-size: cover;
   }
+  .brunnen{
+    background-image: url("../img/brunnen.png");
+    background-position: center;
+    background-size: 55px;
+    background-repeat: no-repeat;
+    // margin-right: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 40px;
+    border: 1px solid #fff;
+    transition: border 500ms ease, box-shadow 500ms ease;
+    cursor: pointer;
+  }
   .win{
     border: 1px solid #00ff51;
     box-shadow: 0px 0px 5px 2px #00ff51;
@@ -93,6 +112,9 @@ align-items: center;
   .draw{
     border: 1px solid gray;
     box-shadow: 0px 0px 5px 2px gray;
+  }
+  &.hidden{
+    display: none;
   }
 }
 
@@ -140,7 +162,7 @@ transform: translate(0%, -50%);
 
 .text_output_container{
   h2{
-    padding-inline: 50px;
+    text-align: center;
   }
   margin-top: 30px;
   font-size: 1.5rem;
@@ -158,6 +180,7 @@ transform: translate(0%, -50%);
   background-color: #000;
   border: none;
   transition:all 300ms ease-in-out;
+  cursor: pointer;
   &:hover{
     color: #ff8801;
     text-shadow: 0px 0px 5px #ff8801;

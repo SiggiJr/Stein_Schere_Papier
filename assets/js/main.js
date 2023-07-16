@@ -7,13 +7,21 @@ const roundsOutput = document.querySelector(".rounds_output");
 const scoreContainer = document.querySelector(".score_container");
 const scoreOutput = document.querySelector(".score");
 const textOutputContainer = document.querySelector(".text_output_container");
+const selectionContainer = document.querySelector(".selection_container");
 const restartBtn = document.querySelector(".restart");
+const brunnenBtn = document.querySelector(".brunnen");
+console.log(brunnenBtn);
 
 let maxRounds = 0;
 let roundsCounter = 0;
 let playerScore = 0;
 let computerScore = 0;
 let gameRunning = false;
+let keyInput = "";
+let keyInputArray = [];
+let konamiCodeActive = false;
+let lastKeypress;
+let currentKeypress;
 
 const playRound = (event) => {
   if (!gameRunning) {
@@ -47,6 +55,7 @@ const playRound = (event) => {
     selectionOptions.forEach((option) => {
       option.removeEventListener("click", playRound);
     });
+    brunnenBtn.removeEventListener("click", easyPoint);
   }
 };
 
@@ -192,6 +201,69 @@ const resetBtn = () => {
   selectionOptions.forEach((option) => {
     option.addEventListener("click", playRound);
   });
+
+  if (konamiCode) {
+    brunnenBtn.addEventListener("click", easyPoint);
+  }
+};
+
+//# ===== Konami Code =====
+
+const easyPoint = (event) => {
+  if (!gameRunning) {
+    startGame();
+  }
+  roundsCounter++;
+  playerScore++;
+  circleColor(event, 1, roundsCounter);
+  updateScoreRounds();
+  const gameOver = checkGameOver();
+
+  if (gameOver) {
+    selectionOptions.forEach((option) => {
+      option.removeEventListener("click", playRound);
+    });
+    brunnenBtn.removeEventListener("click", easyPoint);
+  }
+  if (!gameOver) {
+    textOutputContainer.innerHTML = "<h2>User bekommt einen Punkt</h2>";
+  } else if (gameOver && playerScore > computerScore) {
+    textOutputContainer.innerHTML = `<h2>User gewinnt</h2>`;
+    scoreContainer.classList.add("win");
+  } else if (gameOver && playerScore < computerScore) {
+    textOutputContainer.innerHTML = `<h2>Computer gewinnt</h2>`;
+    scoreContainer.classList.add("lose");
+  } else if (gameOver && playerScore === computerScore) {
+    textOutputContainer.innerHTML = `<h2>Unentschieden</h2>`;
+    scoreContainer.classList.add("draw");
+  }
+};
+
+const konamiCode = (event) => {
+  currentKeypress = Date.now();
+
+  if (currentKeypress - lastKeypress > 5000) {
+    keyInputArray = [];
+  }
+  keyInputArray.push(event.key);
+  keyInput = keyInputArray.join(",");
+
+  if (
+    keyInput.includes("ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a,Enter") &&
+    !konamiCodeActive
+  ) {
+    konamiCodeActive = true;
+    brunnenBtn.classList.remove("hidden");
+    keyInputArray = [];
+  } else if (
+    keyInput.includes("ArrowUp,ArrowUp,ArrowDown,ArrowDown,ArrowLeft,ArrowRight,ArrowLeft,ArrowRight,b,a,Enter") &&
+    konamiCodeActive
+  ) {
+    konamiCodeActive = false;
+    brunnenBtn.classList.add("hidden");
+    keyInputArray = [];
+  }
+  lastKeypress = Date.now();
 };
 
 selectionOptions.forEach((option) => {
@@ -199,3 +271,7 @@ selectionOptions.forEach((option) => {
 });
 
 restartBtn.addEventListener("click", resetBtn);
+
+brunnenBtn.addEventListener("click", easyPoint);
+
+document.body.addEventListener("keydown", konamiCode);
