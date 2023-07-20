@@ -124,7 +124,13 @@ const updateScoreRounds = () => {
 
 const checkGameOver = () => {
   let gameOver = false;
-  if (playerScore > maxRounds / 2 || computerScore > maxRounds / 2 || roundsCounter === maxRounds) {
+  if (
+    playerScore > maxRounds / 2 ||
+    computerScore > maxRounds / 2 ||
+    roundsCounter === maxRounds ||
+    maxRounds - roundsCounter + playerScore < computerScore ||
+    maxRounds - roundsCounter + computerScore < playerScore
+  ) {
     gameOver = true;
   }
   return gameOver;
